@@ -6,6 +6,7 @@
 namespace VortexEngine {
 
 	VortexApp::VortexApp() {
+		loadModels();
 		createPipelineLayout();
 		createPipeline();
 		createCommandBuffers();
@@ -22,6 +23,16 @@ namespace VortexEngine {
 		}
 
 		vkDeviceWaitIdle(vortexDevice.device());
+	}
+
+	void VortexApp::loadModels() {
+		std::vector<VortexModel::Vertex> vertices{
+			{{0.0f, -0.5f}},
+			{{0.5f, 0.5f}},
+			{{-0.5f, 0.5f}}
+		};
+
+		vortexModel = std::make_unique<VortexModel>(vortexDevice, vertices);
 	}
 
 	void VortexApp::createPipelineLayout() {
@@ -86,7 +97,8 @@ namespace VortexEngine {
 			vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
 			vortexPipeline->bind(commandBuffers[i]);
-			vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
+			vortexModel->bind(commandBuffers[i]);
+			vortexModel->draw(commandBuffers[i]);
 
 			vkCmdEndRenderPass(commandBuffers[i]);
 			if (vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS) {

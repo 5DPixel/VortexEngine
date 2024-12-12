@@ -29,11 +29,11 @@ namespace VortexEngine {
 		vkUnmapMemory(vortexDevice.device(), vertexBufferMemory);
 	}
 
-	void VortexModel::bind(VkCommandBuffer commandBuffer) {
+	void VortexModel::draw(VkCommandBuffer commandBuffer) {
 		vkCmdDraw(commandBuffer, vertexCount, 1, 0, 0);
 	}
 
-	void VortexModel::draw(VkCommandBuffer commandBuffer) {
+	void VortexModel::bind(VkCommandBuffer commandBuffer) {
 		VkBuffer buffers[] = { vertexBuffer };
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffer, 0, 1, buffers, offsets);
@@ -47,11 +47,14 @@ namespace VortexEngine {
 		return bindingDescriptions;
 	}
 
-	std::vector<VkVertexInputBindingDescription> VortexModel::Vertex::getAttributeDescriptions() {
+	std::vector<VkVertexInputAttributeDescription> VortexModel::Vertex::getAttributeDescriptions() {
 		std::vector<VkVertexInputAttributeDescription> attributeDescriptions(1);
 
 		attributeDescriptions[0].binding = 0;
 		attributeDescriptions[0].location = 0;
 		attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+		attributeDescriptions[0].offset = 0;
+
+		return attributeDescriptions;
 	}
 }
