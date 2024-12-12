@@ -31,7 +31,7 @@ namespace VortexEngine {
 		void createCommandBuffers();
 		void drawFrame();
 
-		VortexWindow vortexWindow{ width, height, "Testing Window" };
+		VortexWindow vortexWindow{ width, height, "Vortex Engine" };
 		VortexDevice vortexDevice{ vortexWindow };
 		VortexSwapChain vortexSwapChain{ vortexDevice, vortexWindow.getExtent() };
 		std::unique_ptr<VortexPipeline> vortexPipeline;
