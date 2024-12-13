@@ -27,9 +27,9 @@ namespace VortexEngine {
 
 	void VortexApp::loadModels() {
 		std::vector<VortexModel::Vertex> vertices{
-			{{0.0f, -0.5f}},
-			{{0.5f, 0.5f}},
-			{{-0.5f, 0.5f}}
+			{{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+			{{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+			{{-0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}}
 		};
 
 		vortexModel = std::make_unique<VortexModel>(vortexDevice, vertices);
