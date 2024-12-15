@@ -29,11 +29,14 @@ namespace VortexEngine {
 		void createPipelineLayout();
 		void createPipeline();
 		void createCommandBuffers();
+		void freeCommandBuffers();
 		void drawFrame();
+		void recreateSwapChain();
+		void recordCommandBuffer(int imageIndex);
 
 		VortexWindow vortexWindow{ width, height, "Vortex Engine" };
 		VortexDevice vortexDevice{ vortexWindow };
-		VortexSwapChain vortexSwapChain{ vortexDevice, vortexWindow.getExtent() };
+		std::unique_ptr<VortexSwapChain> vortexSwapChain;
 		std::unique_ptr<VortexPipeline> vortexPipeline;
 		VkPipelineLayout pipelineLayout;
 		std::vector<VkCommandBuffer> commandBuffers;

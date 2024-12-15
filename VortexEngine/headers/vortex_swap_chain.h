@@ -5,6 +5,7 @@
 #include <vulkan/vulkan.h>
 
 // std lib headers
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -15,10 +16,11 @@ namespace VortexEngine {
         static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
         VortexSwapChain(VortexDevice& deviceRef, VkExtent2D windowExtent);
+        VortexSwapChain(VortexDevice& deviceRef, VkExtent2D windowExtent, std::shared_ptr<VortexSwapChain> previous);
         ~VortexSwapChain();
 
         VortexSwapChain(const VortexSwapChain&) = delete;
-        void operator=(const VortexSwapChain&) = delete;
+        VortexSwapChain& operator=(const VortexSwapChain&) = delete;
 
         VkFramebuffer getFrameBuffer(int index) { return swapChainFramebuffers[index]; }
         VkRenderPass getRenderPass() { return renderPass; }
@@ -38,6 +40,7 @@ namespace VortexEngine {
         VkResult submitCommandBuffers(const VkCommandBuffer* buffers, uint32_t* imageIndex);
 
     private:
+        void init();
         void createSwapChain();
         void createImageViews();
         void createDepthResources();
@@ -68,6 +71,7 @@ namespace VortexEngine {
         VkExtent2D windowExtent;
 
         VkSwapchainKHR swapChain;
+        std::shared_ptr<VortexSwapChain> oldSwapChain;
 
         std::vector<VkSemaphore> imageAvailableSemaphores;
         std::vector<VkSemaphore> renderFinishedSemaphores;

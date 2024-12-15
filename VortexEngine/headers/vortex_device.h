@@ -35,7 +35,7 @@ namespace VortexEngine {
 
         // Not copyable or movable
         VortexDevice(const VortexDevice&) = delete;
-        void operator=(const VortexDevice&) = delete;
+        VortexDevice& operator=(const VortexDevice&) = delete;
         VortexDevice(VortexDevice&&) = delete;
         VortexDevice& operator=(VortexDevice&&) = delete;
 
