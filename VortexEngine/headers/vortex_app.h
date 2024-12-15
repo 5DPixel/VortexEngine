@@ -3,8 +3,8 @@
 #include "../headers/vortex_window.h"
 #include "../headers/vortex_pipeline.h"
 #include "../headers/vortex_device.h"
+#include "../headers/vortex_game_object.h"
 #include "../headers/vortex_swap_chain.h"
-#include "../headers/vortex_model.h"
 
 #include <memory>
 #include <vector>
@@ -25,7 +25,7 @@ namespace VortexEngine {
 		void run();
 
 	private:
-		void loadModels();
+		void loadGameObjects();
 		void createPipelineLayout();
 		void createPipeline();
 		void createCommandBuffers();
@@ -33,6 +33,7 @@ namespace VortexEngine {
 		void drawFrame();
 		void recreateSwapChain();
 		void recordCommandBuffer(int imageIndex);
+		void renderGameObjects(VkCommandBuffer commandBuffer);
 
 		VortexWindow vortexWindow{ width, height, "Vortex Engine" };
 		VortexDevice vortexDevice{ vortexWindow };
@@ -40,6 +41,6 @@ namespace VortexEngine {
 		std::unique_ptr<VortexPipeline> vortexPipeline;
 		VkPipelineLayout pipelineLayout;
 		std::vector<VkCommandBuffer> commandBuffers;
-		std::unique_ptr<VortexModel> vortexModel;
+		std::vector<VortexGameObject> gameObjects;
 	};
 }

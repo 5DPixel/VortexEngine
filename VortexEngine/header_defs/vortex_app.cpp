@@ -1,12 +1,23 @@
 #include "../headers/vortex_app.h"
 
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include <glm/glm.hpp>
+#include <glm/gtc/constants.hpp>
+
 #include <stdexcept>
 #include <array>
 
 namespace VortexEngine {
 
+	struct SimplePushConstantData {
+		glm::mat2 transform{ 1.0f };
+		glm::vec2 offset;
+		alignas(16) glm::vec3 color;
+	};
+
 	VortexApp::VortexApp() {
-		loadModels();
+		loadGameObjects();
 		createPipelineLayout();
 		recreateSwapChain();
 		createCommandBuffers();
@@ -25,23 +36,39 @@ namespace VortexEngine {
 		vkDeviceWaitIdle(vortexDevice.device());
 	}
 
-	void VortexApp::loadModels() {
+	void VortexApp::loadGameObjects() {
 		std::vector<VortexModel::Vertex> vertices{
 			{{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
 			{{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
 			{{-0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}}
 		};
 
-		vortexModel = std::make_unique<VortexModel>(vortexDevice, vertices);
+		auto vortexModel = std::make_shared<VortexModel>(vortexDevice, vertices);
+
+		auto triangle = VortexGameObject::createGameObject();
+		triangle.model = vortexModel;
+		triangle.color = { 0.1f, 0.8f, 0.1f };
+		triangle.transform2D.translation.x = 0.2f;
+		triangle.transform2D.scale = { 2.0f, 0.5f };
+		triangle.transform2D.rotation = 0.25f * glm::two_pi<float>();
+
+		gameObjects.push_back(std::move(triangle));
 	}
 
 	void VortexApp::createPipelineLayout() {
+
+		VkPushConstantRange pushConstantRange{};
+		pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+		pushConstantRange.offset = 0;
+		pushConstantRange.size = sizeof(SimplePushConstantData);
+
+
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 		pipelineLayoutInfo.setLayoutCount = 0;
 		pipelineLayoutInfo.pSetLayouts = nullptr;
-		pipelineLayoutInfo.pushConstantRangeCount = 0;
-		pipelineLayoutInfo.pPushConstantRanges = nullptr;
+		pipelineLayoutInfo.pushConstantRangeCount = 1;
+		pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
 		if (vkCreatePipelineLayout(vortexDevice.device(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
 			throw std::runtime_error("Failed to create pipeline layout!");
 		}
@@ -115,6 +142,7 @@ namespace VortexEngine {
 	}
 
 	void VortexApp::recordCommandBuffer(int imageIndex) {
+
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -131,7 +159,7 @@ namespace VortexEngine {
 		renderPassInfo.renderArea.extent = vortexSwapChain->getSwapChainExtent();
 
 		std::array<VkClearValue, 2>clearValues{};
-		clearValues[0].color = { 0.1f, 0.1f, 0.1f };
+		clearValues[0].color = { 0.01f, 0.01f, 0.01f, 1.0f };
 		clearValues[1].depthStencil = { 1.0f, 0 };
 		renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
 		renderPassInfo.pClearValues = clearValues.data();
@@ -149,15 +177,40 @@ namespace VortexEngine {
 		vkCmdSetViewport(commandBuffers[imageIndex], 0, 1, &viewport);
 		vkCmdSetScissor(commandBuffers[imageIndex], 0, 1, &scissor);
 
-		vortexPipeline->bind(commandBuffers[imageIndex]);
-		vortexModel->bind(commandBuffers[imageIndex]);
-		vortexModel->draw(commandBuffers[imageIndex]);
+		renderGameObjects(commandBuffers[imageIndex]);
 
 		vkCmdEndRenderPass(commandBuffers[imageIndex]);
 		if (vkEndCommandBuffer(commandBuffers[imageIndex]) != VK_SUCCESS) {
 			throw std::runtime_error("Failed to record command buffer");
 		}
 	}
+
+	void VortexApp::renderGameObjects(VkCommandBuffer commandBuffer) {
+		vortexPipeline->bind(commandBuffer);
+
+		for (auto& obj : gameObjects) {
+			obj.transform2D.rotation = glm::mod(obj.transform2D.rotation + 0.01f, glm::two_pi<float>());
+
+			SimplePushConstantData push{};
+
+			push.offset = obj.transform2D.translation;
+			push.color = obj.color;
+			push.transform = obj.transform2D.mat2();
+
+			vkCmdPushConstants(
+				commandBuffer,
+				pipelineLayout,
+				VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
+				0,
+				sizeof(SimplePushConstantData),
+				&push
+			);
+
+			obj.model->bind(commandBuffer);
+			obj.model->draw(commandBuffer);
+		}
+	}
+
 	void VortexApp::drawFrame() {
 		uint32_t imageIndex;
 		auto result = vortexSwapChain->acquireNextImage(&imageIndex);

@@ -40,6 +40,9 @@
     <ClInclude Include="headers\vortex_model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="headers\vortex_game_object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="header_defs\vortex_device.cpp">

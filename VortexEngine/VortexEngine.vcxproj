@@ -26,6 +26,7 @@
   <ItemGroup>
     <ClInclude Include="headers\vortex_app.h" />
     <ClInclude Include="headers\vortex_device.h" />
+    <ClInclude Include="headers\vortex_game_object.h" />
     <ClInclude Include="headers\vortex_model.h" />
     <ClInclude Include="headers\vortex_pipeline.h" />
     <ClInclude Include="headers\vortex_swap_chain.h" />
