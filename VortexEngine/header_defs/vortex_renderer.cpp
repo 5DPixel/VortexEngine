@@ -28,10 +28,11 @@ namespace VortexEngine {
 			vortexSwapChain = std::make_unique<VortexSwapChain>(vortexDevice, extent);
 		}
 		else {
-			vortexSwapChain = std::make_unique<VortexSwapChain>(vortexDevice, extent, std::move(vortexSwapChain));
-			if (vortexSwapChain->imageCount() != commandBuffers.size()) {
-				freeCommandBuffers();
-				createCommandBuffers();
+			std::shared_ptr<VortexSwapChain> oldSwapChain = std::move(vortexSwapChain);
+			vortexSwapChain = std::make_unique<VortexSwapChain>(vortexDevice, extent, oldSwapChain);
+
+			if (!oldSwapChain->compareSwapFormats(*vortexSwapChain.get())) {
+				throw std::runtime_error("Swap chain image(or depth) format has changed!");
 			}
 		}
 
@@ -39,7 +40,7 @@ namespace VortexEngine {
 	}
 
 	void VortexRenderer::createCommandBuffers() {
-		commandBuffers.resize(vortexSwapChain->imageCount());
+		commandBuffers.resize(VortexSwapChain::MAX_FRAMES_IN_FLIGHT);
 
 		VkCommandBufferAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -108,6 +109,7 @@ namespace VortexEngine {
 		}
 
 		isFrameStarted = false;
+		currentFrameIndex = (currentFrameIndex + 1) % VortexSwapChain::MAX_FRAMES_IN_FLIGHT;
 	}
 
 	void VortexRenderer::beginSwapChainRenderPass(VkCommandBuffer commandBuffer) {
