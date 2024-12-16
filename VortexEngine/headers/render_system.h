@@ -3,6 +3,7 @@
 #include "../headers/vortex_pipeline.h"
 #include "../headers/vortex_device.h"
 #include "../headers/vortex_game_object.h"
+#include "../headers/vortex_camera.h"
 
 #include <memory>
 #include <vector>
@@ -18,7 +19,7 @@ namespace VortexEngine {
 		RenderSystem(const RenderSystem&) = delete;
 		RenderSystem& operator=(const RenderSystem&) = delete;
 
-		void renderGameObjects(VkCommandBuffer commandBuffer, std::vector<VortexGameObject>& gameObjects);
+		void renderGameObjects(VkCommandBuffer commandBuffer, std::vector<VortexGameObject>& gameObjects, const VortexCamera& camera);
 
 	private:
 		void createPipelineLayout();

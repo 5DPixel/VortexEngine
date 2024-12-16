@@ -49,6 +49,9 @@
     <ClInclude Include="headers\render_system.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="headers\vortex_camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="header_defs\vortex_device.cpp">
@@ -76,6 +79,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="header_defs\render_system.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="header_defs\vortex_camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

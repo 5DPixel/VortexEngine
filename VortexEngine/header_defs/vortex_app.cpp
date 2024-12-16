@@ -1,5 +1,6 @@
 #include "../headers/vortex_app.h"
 #include "../headers/render_system.h"
+#include "../headers/vortex_camera.h"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -19,16 +20,21 @@ namespace VortexEngine {
 
 	void VortexApp::run() {
 		RenderSystem renderSystem{ vortexDevice, vortexRenderer.getSwapChainRenderPass() };
+        VortexCamera camera{};
 
 		while (!vortexWindow.shouldClose()) {
 			glfwPollEvents();
+
+            float aspect = vortexRenderer.getAspectRatio();
+            /// camera.setOrthographicProjection(-aspect, aspect, -1, 1, -1, 1);
+            camera.setPerspectiveProjection(glm::radians(70.0f), aspect, 0.1f, 10.0f);
 
 			if (auto commandBuffer = vortexRenderer.beginFrame()) {
 
 				//add more passes like shadows
 
 				vortexRenderer.beginSwapChainRenderPass(commandBuffer);
-				renderSystem.renderGameObjects(commandBuffer, gameObjects);
+				renderSystem.renderGameObjects(commandBuffer, gameObjects, camera);
 				vortexRenderer.endSwapChainRenderPass(commandBuffer);
 				vortexRenderer.endFrame();
 			}
@@ -87,7 +93,6 @@ namespace VortexEngine {
             {{-.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
             {{.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
             {{.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
-
         };
         for (auto& v : vertices) {
             v.position += offset;
@@ -100,7 +105,7 @@ namespace VortexEngine {
 
         auto cube = VortexGameObject::createGameObject();
         cube.model = vortexModel;
-        cube.transform.translation = { 0.0f, 0.0f, 0.5f };
+        cube.transform.translation = { 0.0f, 0.0f, 1.5f };
         cube.transform.scale = { 0.5f, 0.5f, 0.5f };
         gameObjects.push_back(std::move(cube));
 	}

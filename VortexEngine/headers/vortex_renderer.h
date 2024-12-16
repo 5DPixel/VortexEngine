@@ -22,6 +22,9 @@ namespace VortexEngine {
 		VkRenderPass getSwapChainRenderPass() const {
 			return vortexSwapChain->getRenderPass();
 		}
+		float getAspectRatio() const {
+			return vortexSwapChain->extentAspectRatio();
+		}
 
 		bool isFrameInProgress() const { return isFrameStarted; }
 
