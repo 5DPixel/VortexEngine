@@ -5,6 +5,8 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VortexEngine", "VortexEngine\VortexEngine.vcxproj", "{77A9F3CD-7108-4962-ACD7-B8E69EEFE764}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VortexEngine2D", "VortexEngine2D\VortexEngine2D.vcxproj", "{650CDBF9-532D-4F87-B00A-70BF92BE495F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{77A9F3CD-7108-4962-ACD7-B8E69EEFE764}.Release|x64.Build.0 = Release|x64
 		{77A9F3CD-7108-4962-ACD7-B8E69EEFE764}.Release|x86.ActiveCfg = Release|Win32
 		{77A9F3CD-7108-4962-ACD7-B8E69EEFE764}.Release|x86.Build.0 = Release|Win32
+		{650CDBF9-532D-4F87-B00A-70BF92BE495F}.Debug|x64.ActiveCfg = Debug|x64
+		{650CDBF9-532D-4F87-B00A-70BF92BE495F}.Debug|x64.Build.0 = Debug|x64
+		{650CDBF9-532D-4F87-B00A-70BF92BE495F}.Debug|x86.ActiveCfg = Debug|Win32
+		{650CDBF9-532D-4F87-B00A-70BF92BE495F}.Debug|x86.Build.0 = Debug|Win32
+		{650CDBF9-532D-4F87-B00A-70BF92BE495F}.Release|x64.ActiveCfg = Release|x64
+		{650CDBF9-532D-4F87-B00A-70BF92BE495F}.Release|x64.Build.0 = Release|x64
+		{650CDBF9-532D-4F87-B00A-70BF92BE495F}.Release|x86.ActiveCfg = Release|Win32
+		{650CDBF9-532D-4F87-B00A-70BF92BE495F}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
