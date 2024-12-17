@@ -52,6 +52,9 @@
     <ClInclude Include="headers\vortex_camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="headers\keyboard_movement_controller.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="header_defs\vortex_device.cpp">
@@ -82,6 +85,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="header_defs\vortex_camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="header_defs\keyboard_movement_controller.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

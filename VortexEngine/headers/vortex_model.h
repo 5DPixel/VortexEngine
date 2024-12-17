@@ -20,7 +20,12 @@ namespace VortexEngine {
 			static std::vector<VkVertexInputAttributeDescription> getAttributeDescriptions();
 		};
 
-		VortexModel(VortexDevice& vortexDevice, const std::vector<Vertex>& vertices);
+		struct Builder {
+			std::vector<Vertex> vertices{};
+			std::vector<uint32_t> indices{};
+		};
+
+		VortexModel(VortexDevice& vortexDevice, const VortexModel::Builder &builder);
 		~VortexModel();
 
 		VortexModel(const VortexModel&) = delete;
@@ -31,11 +36,18 @@ namespace VortexEngine {
 
 
 	private:
-		void createVertexBuffers(const std::vector<Vertex>& vertices);
+		void createVertexBuffers(const std::vector<Vertex> &vertices);
+		void createIndexBuffers(const std::vector<uint32_t> &indices);
 
 		VortexDevice& vortexDevice;
+
 		VkBuffer vertexBuffer;
 		VkDeviceMemory vertexBufferMemory;
 		uint32_t vertexCount;
+
+		bool hasIndexBuffer = false;
+		VkBuffer indexBuffer;
+		VkDeviceMemory indexBufferMemory;
+		uint32_t indexCount;
 	};
 }

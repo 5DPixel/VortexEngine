@@ -3,40 +3,113 @@
 #include <cstring>
 
 namespace VortexEngine {
-	VortexModel::VortexModel(VortexDevice& vortexDevice, const std::vector<Vertex>& vertices) : vortexDevice{ vortexDevice } {
-		createVertexBuffers(vertices);
+	VortexModel::VortexModel(VortexDevice& vortexDevice, const VortexModel::Builder &builder) : vortexDevice{ vortexDevice } {
+		createVertexBuffers(builder.vertices);
+		createIndexBuffers(builder.indices);
 	}
+
 	VortexModel::~VortexModel() {
 		vkDestroyBuffer(vortexDevice.device(), vertexBuffer, nullptr);
 		vkFreeMemory(vortexDevice.device(), vertexBufferMemory, nullptr);
+
+		if (hasIndexBuffer) {
+			vkDestroyBuffer(vortexDevice.device(), indexBuffer, nullptr);
+			vkFreeMemory(vortexDevice.device(), indexBufferMemory, nullptr);
+		}
 	}
 
 	void VortexModel::createVertexBuffers(const std::vector<Vertex>& vertices) {
 		vertexCount = static_cast<uint32_t>(vertices.size());
 		assert(vertexCount >= 3 && "Vertex count must be at least 3");
 		VkDeviceSize bufferSize = sizeof(vertices[0]) * vertexCount;
+
+		VkBuffer stagingBuffer;
+		VkDeviceMemory stagingBufferMemory;
+
 		vortexDevice.createBuffer(
 			bufferSize,
-			VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+			VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+			stagingBuffer,
+			stagingBufferMemory
+		);
+
+		void* data;
+		vkMapMemory(vortexDevice.device(), stagingBufferMemory, 0, bufferSize, 0, &data);
+		memcpy(data, vertices.data(), static_cast<size_t>(bufferSize));
+		vkUnmapMemory(vortexDevice.device(), stagingBufferMemory);
+
+		vortexDevice.createBuffer(
+			bufferSize,
+			VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
 			vertexBuffer,
 			vertexBufferMemory
 		);
 
+		vortexDevice.copyBuffer(stagingBuffer, vertexBuffer, bufferSize);
+
+		vkDestroyBuffer(vortexDevice.device(), stagingBuffer, nullptr);
+		vkFreeMemory(vortexDevice.device(), stagingBufferMemory, nullptr);
+	}
+
+	void VortexModel::createIndexBuffers(const std::vector<uint32_t> &indices) {
+		indexCount = static_cast<uint32_t>(indices.size());
+		hasIndexBuffer = indexCount > 0;
+
+		if (!hasIndexBuffer) {
+			return;
+		};
+
+		VkDeviceSize bufferSize = sizeof(indices[0]) * indexCount;
+
+		VkBuffer stagingBuffer;
+		VkDeviceMemory stagingBufferMemory;
+
+		vortexDevice.createBuffer(
+			bufferSize,
+			VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+			stagingBuffer,
+			stagingBufferMemory
+		);
+
 		void* data;
-		vkMapMemory(vortexDevice.device(), vertexBufferMemory, 0, bufferSize, 0, &data);
-		memcpy(data, vertices.data(), static_cast<size_t>(bufferSize));
-		vkUnmapMemory(vortexDevice.device(), vertexBufferMemory);
+		vkMapMemory(vortexDevice.device(), stagingBufferMemory, 0, bufferSize, 0, &data);
+		memcpy(data, indices.data(), static_cast<size_t>(bufferSize));
+		vkUnmapMemory(vortexDevice.device(), stagingBufferMemory);
+
+		vortexDevice.createBuffer(
+			bufferSize,
+			VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+			indexBuffer,
+			indexBufferMemory
+		);
+
+		vortexDevice.copyBuffer(stagingBuffer, indexBuffer, bufferSize);
+
+		vkDestroyBuffer(vortexDevice.device(), stagingBuffer, nullptr);
+		vkFreeMemory(vortexDevice.device(), stagingBufferMemory, nullptr);
 	}
 
 	void VortexModel::draw(VkCommandBuffer commandBuffer) {
-		vkCmdDraw(commandBuffer, vertexCount, 1, 0, 0);
+		if (hasIndexBuffer) {
+			vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
+		}
+		else {
+			vkCmdDraw(commandBuffer, vertexCount, 1, 0, 0);
+		}
 	}
 
 	void VortexModel::bind(VkCommandBuffer commandBuffer) {
 		VkBuffer buffers[] = { vertexBuffer };
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffer, 0, 1, buffers, offsets);
+		
+		if (hasIndexBuffer) {
+			vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+		}
 	}
 
 	std::vector<VkVertexInputBindingDescription> VortexModel::Vertex::getBindingDescriptions() {
