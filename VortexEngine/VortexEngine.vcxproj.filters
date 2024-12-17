@@ -55,6 +55,9 @@
     <ClInclude Include="headers\keyboard_movement_controller.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="headers\vortex_utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="header_defs\vortex_device.cpp">
