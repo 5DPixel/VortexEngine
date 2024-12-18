@@ -12,7 +12,7 @@ namespace VortexEngine {
 
 	struct SimplePushConstantData {
 		glm::mat4 transform{ 1.0f };
-		glm::mat4 modelMatrix{ 1.0f };
+		glm::mat4 normalMatrix{ 1.0f };
 	};
 
 	RenderSystem::RenderSystem(VortexDevice& device, VkRenderPass renderPass) : vortexDevice{ device } {
@@ -71,7 +71,7 @@ namespace VortexEngine {
 
 			auto modelMatrix = obj.transform.mat4();
 			push.transform = projectionView * modelMatrix;
-			push.modelMatrix = modelMatrix;
+			push.normalMatrix = obj.transform.normalMatrix();
 
 			vkCmdPushConstants(
 				commandBuffer,
