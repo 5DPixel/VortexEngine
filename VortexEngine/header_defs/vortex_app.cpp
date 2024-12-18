@@ -35,6 +35,8 @@ namespace VortexEngine {
 		while (!vortexWindow.shouldClose()) {
 			glfwPollEvents();
 
+			glfwSetInputMode(vortexWindow.getGLFWwindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+
             auto newTime = std::chrono::high_resolution_clock::now();
             float frameTime = std::chrono::duration<float, std::chrono::seconds::period>(newTime - currentTime).count();
             currentTime = newTime;
@@ -61,7 +63,7 @@ namespace VortexEngine {
 	}
 
 	void VortexApp::loadGameObjects() {
-		std::shared_ptr<VortexModel> vortexModel = VortexModel::createModelFromFile(vortexDevice, "C:/Users/judet/Downloads/models/models/smooth_teapot.obj");
+		std::shared_ptr<VortexModel> vortexModel = VortexModel::createModelFromFile(vortexDevice, "C:/Users/judet/OneDrive/Desktop/vortex_engine_proj_1/Assets/Meshes/smooth_teapot.obj");
 
         auto cube = VortexGameObject::createGameObject();
         cube.model = vortexModel;

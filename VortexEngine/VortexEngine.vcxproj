@@ -28,6 +28,7 @@
     <ClInclude Include="headers\mouse_movement_controller.h" />
     <ClInclude Include="headers\render_system.h" />
     <ClInclude Include="headers\vortex_app.h" />
+    <ClInclude Include="headers\vortex_buffer.h" />
     <ClInclude Include="headers\vortex_camera.h" />
     <ClInclude Include="headers\vortex_device.h" />
     <ClInclude Include="headers\vortex_game_object.h" />

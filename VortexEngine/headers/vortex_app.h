@@ -12,8 +12,8 @@ namespace VortexEngine {
 	class VortexApp {
 
 	public:
-		static constexpr int width = 800;
-		static constexpr int height = 600;
+		static constexpr int width = 1280;
+		static constexpr int height = 720;
 
 		VortexApp();
 		~VortexApp();

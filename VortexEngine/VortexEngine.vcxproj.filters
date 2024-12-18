@@ -61,6 +61,9 @@
     <ClInclude Include="headers\mouse_movement_controller.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="headers\vortex_buffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="header_defs\vortex_device.cpp">
