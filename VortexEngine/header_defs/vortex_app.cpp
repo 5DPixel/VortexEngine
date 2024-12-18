@@ -2,6 +2,7 @@
 #include "../headers/render_system.h"
 #include "../headers/vortex_camera.h"
 #include "../headers/keyboard_movement_controller.h"
+#include "../headers/mouse_movement_controller.h"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -27,6 +28,7 @@ namespace VortexEngine {
 
         auto viewerObject = VortexGameObject::createGameObject();
         KeyboardMovementController cameraController{};
+		MouseMovementController mouseController{};
 
         auto currentTime = std::chrono::high_resolution_clock::now();
 
@@ -38,10 +40,11 @@ namespace VortexEngine {
             currentTime = newTime;
 
             cameraController.moveInPlaneXZ(vortexWindow.getGLFWwindow(), frameTime, viewerObject);
+			mouseController.lookAroundInPlaneXZ(vortexWindow.getGLFWwindow(), frameTime, viewerObject);
             camera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
 
             float aspect = vortexRenderer.getAspectRatio();
-            camera.setPerspectiveProjection(glm::radians(50.0f), aspect, 0.1f, 10.0f);
+            camera.setPerspectiveProjection(glm::radians(70.0f), aspect, 0.1f, 10.0f);
 
 			if (auto commandBuffer = vortexRenderer.beginFrame()) {
 
@@ -58,7 +61,7 @@ namespace VortexEngine {
 	}
 
 	void VortexApp::loadGameObjects() {
-		std::shared_ptr<VortexModel> vortexModel = VortexModel::createModelFromFile(vortexDevice, "C:/Users/judet/Downloads/models/models/smooth_vase.obj");
+		std::shared_ptr<VortexModel> vortexModel = VortexModel::createModelFromFile(vortexDevice, "C:/Users/judet/Downloads/models/models/smooth_teapot.obj");
 
         auto cube = VortexGameObject::createGameObject();
         cube.model = vortexModel;

@@ -5,7 +5,7 @@ layout(location = 0) in vec3 fragColor;
 
 layout(push_constant) uniform Push {
 	mat4 transform;
-	vec3 color;
+	mat4 modelMatrix;
 } push;
 
 void main(){
