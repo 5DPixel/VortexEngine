@@ -6,6 +6,11 @@ namespace VortexEngine {
 	}
 
 	FileReader::FileReader(std::string filePath){
+		if (!std::filesystem::exists(filePath)) {
+			std::string errorMessage = "Error: Scene file " + filepath + " did not exist!";
+			assert(false && errorMessage.c_str());
+		}
+
 		filepath = filePath;
 		init();
 	}

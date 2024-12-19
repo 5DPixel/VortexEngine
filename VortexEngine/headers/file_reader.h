@@ -2,7 +2,8 @@
 
 #include <string>
 #include <fstream>
-#include <iostream>
+#include <cassert>
+#include <filesystem>
 
 namespace VortexEngine {
 	class FileReader {
