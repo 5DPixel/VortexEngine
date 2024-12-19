@@ -1,4 +1,5 @@
 #include "../headers/keyboard_movement_controller.h"
+#include <iostream>
 
 namespace VortexEngine {
 	void KeyboardMovementController::moveInPlaneXZ(GLFWwindow* window, float dt, VortexGameObject& gameObject) {

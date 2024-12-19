@@ -1,6 +1,7 @@
 #pragma once
 
 #include "vortex_device.h"
+#include "vortex_buffer.h"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -52,13 +53,11 @@ namespace VortexEngine {
 
 		VortexDevice& vortexDevice;
 
-		VkBuffer vertexBuffer;
-		VkDeviceMemory vertexBufferMemory;
+		std::unique_ptr<VortexBuffer> vertexBuffer;
 		uint32_t vertexCount;
 
 		bool hasIndexBuffer = false;
-		VkBuffer indexBuffer;
-		VkDeviceMemory indexBufferMemory;
+		std::unique_ptr<VortexBuffer> indexBuffer;
 		uint32_t indexCount;
 	};
 }

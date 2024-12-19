@@ -64,6 +64,18 @@
     <ClInclude Include="headers\vortex_buffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="headers\vortex_frame_info.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\vortex_descriptors.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\json.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\file_reader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="header_defs\vortex_device.cpp">
@@ -103,6 +115,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="header_defs\vortex_game_object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="header_defs\vortex_buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="header_defs\vortex_descriptors.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="header_defs\file_reader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

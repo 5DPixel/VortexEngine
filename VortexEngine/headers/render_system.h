@@ -1,9 +1,10 @@
 #pragma once
 
-#include "../headers/vortex_pipeline.h"
-#include "../headers/vortex_device.h"
-#include "../headers/vortex_game_object.h"
-#include "../headers/vortex_camera.h"
+#include "vortex_pipeline.h"
+#include "vortex_device.h"
+#include "vortex_game_object.h"
+#include "vortex_camera.h"
+#include "vortex_frame_info.h"
 
 #include <memory>
 #include <vector>
@@ -13,16 +14,16 @@ namespace VortexEngine {
 
 	public:
 
-		RenderSystem(VortexDevice& device, VkRenderPass renderPass);
+		RenderSystem(VortexDevice& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout);
 		~RenderSystem();
 
 		RenderSystem(const RenderSystem&) = delete;
 		RenderSystem& operator=(const RenderSystem&) = delete;
 
-		void renderGameObjects(VkCommandBuffer commandBuffer, std::vector<VortexGameObject>& gameObjects, const VortexCamera& camera);
+		void renderGameObjects(FrameInfo &frameInfo, std::vector<VortexGameObject>& gameObjects);
 
 	private:
-		void createPipelineLayout();
+		void createPipelineLayout(VkDescriptorSetLayout globalSetLayout);
 		void createPipeline(VkRenderPass renderPass);
 
 		VortexDevice& vortexDevice;

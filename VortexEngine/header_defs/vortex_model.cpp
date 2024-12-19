@@ -28,15 +28,7 @@ namespace VortexEngine {
 		createIndexBuffers(builder.indices);
 	}
 
-	VortexModel::~VortexModel() {
-		vkDestroyBuffer(vortexDevice.device(), vertexBuffer, nullptr);
-		vkFreeMemory(vortexDevice.device(), vertexBufferMemory, nullptr);
-
-		if (hasIndexBuffer) {
-			vkDestroyBuffer(vortexDevice.device(), indexBuffer, nullptr);
-			vkFreeMemory(vortexDevice.device(), indexBufferMemory, nullptr);
-		}
-	}
+	VortexModel::~VortexModel() {}
 
 	std::unique_ptr<VortexModel> VortexModel::createModelFromFile(VortexDevice& device, const std::string& filepath) {
 		Builder builder{};
@@ -49,35 +41,28 @@ namespace VortexEngine {
 		vertexCount = static_cast<uint32_t>(vertices.size());
 		assert(vertexCount >= 3 && "Vertex count must be at least 3");
 		VkDeviceSize bufferSize = sizeof(vertices[0]) * vertexCount;
+		uint32_t vertexSize = sizeof(vertices[0]);
 
-		VkBuffer stagingBuffer;
-		VkDeviceMemory stagingBufferMemory;
-
-		vortexDevice.createBuffer(
-			bufferSize,
+		VortexBuffer stagingBuffer {
+			vortexDevice,
+			vertexSize,
+			vertexCount,
 			VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-			stagingBuffer,
-			stagingBufferMemory
-		);
+		};
 
-		void* data;
-		vkMapMemory(vortexDevice.device(), stagingBufferMemory, 0, bufferSize, 0, &data);
-		memcpy(data, vertices.data(), static_cast<size_t>(bufferSize));
-		vkUnmapMemory(vortexDevice.device(), stagingBufferMemory);
+		stagingBuffer.map();
+		stagingBuffer.writeToBuffer((void*)vertices.data());
 
-		vortexDevice.createBuffer(
-			bufferSize,
+		vertexBuffer = std::make_unique<VortexBuffer>(
+			vortexDevice,
+			vertexSize,
+			vertexCount,
 			VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-			vertexBuffer,
-			vertexBufferMemory
+			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
 		);
 
-		vortexDevice.copyBuffer(stagingBuffer, vertexBuffer, bufferSize);
-
-		vkDestroyBuffer(vortexDevice.device(), stagingBuffer, nullptr);
-		vkFreeMemory(vortexDevice.device(), stagingBufferMemory, nullptr);
+		vortexDevice.copyBuffer(stagingBuffer.getBuffer(), vertexBuffer->getBuffer(), bufferSize);
 	}
 
 	void VortexModel::createIndexBuffers(const std::vector<uint32_t> &indices) {
@@ -89,35 +74,28 @@ namespace VortexEngine {
 		};
 
 		VkDeviceSize bufferSize = sizeof(indices[0]) * indexCount;
+		uint32_t indexSize = sizeof(indices[0]);
 
-		VkBuffer stagingBuffer;
-		VkDeviceMemory stagingBufferMemory;
-
-		vortexDevice.createBuffer(
-			bufferSize,
+		VortexBuffer stagingBuffer{
+			vortexDevice,
+			indexSize,
+			indexCount,
 			VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-			stagingBuffer,
-			stagingBufferMemory
-		);
+		};
 
-		void* data;
-		vkMapMemory(vortexDevice.device(), stagingBufferMemory, 0, bufferSize, 0, &data);
-		memcpy(data, indices.data(), static_cast<size_t>(bufferSize));
-		vkUnmapMemory(vortexDevice.device(), stagingBufferMemory);
+		stagingBuffer.map();
+		stagingBuffer.writeToBuffer((void*)indices.data());
 
-		vortexDevice.createBuffer(
-			bufferSize,
+		indexBuffer = std::make_unique<VortexBuffer>(
+			vortexDevice,
+			indexSize,
+			indexCount,
 			VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-			indexBuffer,
-			indexBufferMemory
+			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
 		);
 
-		vortexDevice.copyBuffer(stagingBuffer, indexBuffer, bufferSize);
-
-		vkDestroyBuffer(vortexDevice.device(), stagingBuffer, nullptr);
-		vkFreeMemory(vortexDevice.device(), stagingBufferMemory, nullptr);
+		vortexDevice.copyBuffer(stagingBuffer.getBuffer(), indexBuffer->getBuffer(), bufferSize);
 	}
 
 	void VortexModel::draw(VkCommandBuffer commandBuffer) {
@@ -130,12 +108,12 @@ namespace VortexEngine {
 	}
 
 	void VortexModel::bind(VkCommandBuffer commandBuffer) {
-		VkBuffer buffers[] = { vertexBuffer };
+		VkBuffer buffers[] = { vertexBuffer->getBuffer() };
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffer, 0, 1, buffers, offsets);
 		
 		if (hasIndexBuffer) {
-			vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+			vkCmdBindIndexBuffer(commandBuffer, indexBuffer->getBuffer(), 0, VK_INDEX_TYPE_UINT32);
 		}
 	}
 

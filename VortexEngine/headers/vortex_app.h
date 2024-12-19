@@ -4,6 +4,7 @@
 #include "../headers/vortex_device.h"
 #include "../headers/vortex_game_object.h"
 #include "../headers/vortex_renderer.h"
+#include "../headers/vortex_descriptors.h"
 
 #include <memory>
 #include <vector>
@@ -30,6 +31,7 @@ namespace VortexEngine {
 		VortexDevice vortexDevice{ vortexWindow };
 		VortexRenderer vortexRenderer{ vortexWindow, vortexDevice };
 
+		std::unique_ptr<VortexDescriptorPool> globalPool{};
 		std::vector<VortexGameObject> gameObjects;
 	};
 }

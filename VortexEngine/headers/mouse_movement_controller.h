@@ -6,7 +6,7 @@
 namespace VortexEngine {
 	class MouseMovementController {
 	public:
-		float sensitivity{ 0.03f };
+		float sensitivity{ 1.2f };
 		void lookAroundInPlaneXZ(GLFWwindow* window, float dt, VortexGameObject& gameObject);
 
 	private:
