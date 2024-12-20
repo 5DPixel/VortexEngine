@@ -24,7 +24,7 @@
     <None Include="shaders\default.vert" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="headers\file_reader.h" />
+    <ClInclude Include="headers\scene_parser.h" />
     <ClInclude Include="headers\json.h" />
     <ClInclude Include="headers\keyboard_movement_controller.h" />
     <ClInclude Include="headers\mouse_movement_controller.h" />
@@ -44,7 +44,7 @@
     <ClInclude Include="headers\vortex_window.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="header_defs\file_reader.cpp" />
+    <ClCompile Include="header_defs\scene_parser.cpp" />
     <ClCompile Include="header_defs\keyboard_movement_controller.cpp" />
     <ClCompile Include="header_defs\mouse_movement_controller.cpp" />
     <ClCompile Include="header_defs\render_system.cpp" />

@@ -35,7 +35,8 @@ namespace VortexEngine {
 
 		glm::vec3 moveDir{ 0.0f };
 
-		if (glfwGetKey(window, keys.moveForward) == GLFW_PRESS) {
+		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_2) == GLFW_PRESS) {
+					if (glfwGetKey(window, keys.moveForward) == GLFW_PRESS) {
 			moveDir += forwardDir;
 		}
 
@@ -57,6 +58,7 @@ namespace VortexEngine {
 
 		if (glfwGetKey(window, keys.moveDown) == GLFW_PRESS) {
 			moveDir -= upDir;
+		}
 		}
 
 		if (glm::dot(moveDir, moveDir) > std::numeric_limits<float>::epsilon()) {

@@ -73,7 +73,7 @@
     <ClInclude Include="headers\json.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="headers\file_reader.h">
+    <ClInclude Include="headers\scene_parser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -123,7 +123,7 @@
     <ClCompile Include="header_defs\vortex_descriptors.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="header_defs\file_reader.cpp">
+    <ClCompile Include="header_defs\scene_parser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

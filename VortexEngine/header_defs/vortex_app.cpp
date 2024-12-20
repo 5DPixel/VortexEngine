@@ -6,7 +6,7 @@
 #include "../headers/mouse_movement_controller.h"
 #include "../headers/vortex_buffer.h"
 #include "../headers/json.h"
-#include "../headers/file_reader.h"
+#include "../headers/scene_parser.h"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -130,16 +130,16 @@ namespace VortexEngine {
 	}
 
 	void VortexApp::loadGameObjects() {
-		std::shared_ptr<VortexModel> vortexModel = VortexModel::createModelFromFile(vortexDevice, "C:/Users/judet/OneDrive/Desktop/vortex_engine_proj_1/Assets/Meshes/smooth_teapot.obj");
+		//std::shared_ptr<VortexModel> vortexModel = VortexModel::createModelFromFile(vortexDevice, "C:/Users/judet/OneDrive/Desktop/vortex_engine_proj_1/Assets/Meshes/smooth_teapot.obj");
 
-        auto cube = VortexGameObject::createGameObject();
-        cube.model = vortexModel;
-        cube.transform.translation = { 0.0f, 0.0f, 1.5f };
-        cube.transform.scale = { 0.5f, 0.5f, 0.5f };
-        gameObjects.push_back(std::move(cube));
+        //auto cube = VortexGameObject::createGameObject();
+        //cube.model = vortexModel;
+        //cube.transform.translation = { 0.0f, 0.0f, 1.5f };
+        //cube.transform.scale = { 0.5f, 0.5f, 0.5f };
+        //gameObjects.push_back(std::move(cube));
 
-		FileReader main{ "C:/Users/judet/OneDrive/Desktop/vortex_engine_proj_1/Assets/Scenes/main.vscn" };
-		nlohmann::json sceneJson = nlohmann::json::parse(main.read());
-		std::cout << sceneJson["gameObjects"];
+		SceneParser mainReader{ "C:/Users/judet/OneDrive/Desktop/vortex_engine_proj_1/Assets/Scenes/main.vscn" };
+
+		gameObjects = mainReader.parseScene(vortexDevice);
 	}
 }
